@@ -10,19 +10,9 @@
     android:orientation="vertical"
     tools:context="com.example.sajalnarang.smsdemo.MainActivity">
 
-    <android.support.design.widget.TextInputLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-        <EditText
-            android:id="@+id/message"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:hint="Random Text"/>
-    </android.support.design.widget.TextInputLayout>
-
     <Button
-        android:id="@+id/send_btn"
+        android:id="@+id/enable_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Send"/>
+        android:text="ENABLE"/>
 </LinearLayout>
