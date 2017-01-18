@@ -1,9 +1,12 @@
 package com.example.sajalnarang.smsdemo;
 
+import android.Manifest;
 import android.app.AlarmManager;
 import android.app.PendingIntent;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -15,14 +18,19 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
+    private static final int MY_PERMISSIONS_SEND_SMS = 1;
     Button enableButton;
     AlarmManager alarmManager;
     PendingIntent alarmIntent;
     public static String[] menu;
     public static List<String> numbers;
+    public static int mId = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        while (ActivityCompat.checkSelfPermission(MainActivity.this, Manifest.permission.SEND_SMS) != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(MainActivity.this, new String[]{Manifest.permission.SEND_SMS}, MY_PERMISSIONS_SEND_SMS);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
@@ -38,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         menu[5] = "Friday's menu";
         menu[6] = "Saturday's menu";
 
-        numbers = new ArrayList<String>();
+        numbers = new ArrayList<>();
         numbers.add("+917043207800");
         numbers.add("+918828291032");
         numbers.add("+919819960546");
