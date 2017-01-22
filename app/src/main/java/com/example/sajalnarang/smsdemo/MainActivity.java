@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -16,13 +17,17 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_SEND_SMS = 1;
     Button enableButton;
+    public static Button reloadMenuButton;
     AlarmManager alarmManager;
     PendingIntent alarmIntent;
-    public static String[] menu;
     public static List<String> numbers;
     public static int mId = 0;
 
@@ -36,15 +41,6 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(this, AlarmReceiver.class);
         alarmIntent = alarmIntent.getBroadcast(this, 0, intent, 0);
-
-        menu = new String[7];
-        menu[0] = "Sunday's menu";
-        menu[1] = "Monday's menu";
-        menu[2] = "Tuesday's menu";
-        menu[3] = "Wednesday's menu";
-        menu[4] = "Thursday's menu";
-        menu[5] = "Friday's menu";
-        menu[6] = "Saturday's menu";
 
         numbers = new ArrayList<>();
         numbers.add("+917043207800");
@@ -63,6 +59,28 @@ public class MainActivity extends AppCompatActivity {
                 alarmManager = (AlarmManager) MainActivity.this.getSystemService(MainActivity.this.ALARM_SERVICE);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
                 Toast.makeText(MainActivity.this, "Enabled", Toast.LENGTH_SHORT).show();
+            }
+        });
+        reloadMenuButton = (Button) findViewById(R.id.reload_menu_btn);
+        reloadMenuButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
+                retrofitInterface.getMenu().enqueue(new Callback<GsonModels.MenuResponse>() {
+                    @Override
+                    public void onResponse(Call<GsonModels.MenuResponse> call, Response<GsonModels.MenuResponse> response) {
+                        if (response.isSuccessful()) {
+                            Data.setMenuResponse(response.body());
+                            Log.d("TAG", "onResponse: success");
+                        }
+                        Log.d("TAG", "onResponse: failure " + response.code() + " " + response.body());
+                    }
+
+                    @Override
+                    public void onFailure(Call<GsonModels.MenuResponse> call, Throwable t) {
+                        Log.d("TAG", "onFailure: ");
+                    }
+                });
             }
         });
     }

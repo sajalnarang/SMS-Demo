@@ -14,5 +14,11 @@
         android:id="@+id/enable_btn"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="ENABLE"/>
+        android:text="Enable"/>
+
+    <Button
+        android:id="@+id/reload_menu_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Reload Menu"/>
 </LinearLayout>

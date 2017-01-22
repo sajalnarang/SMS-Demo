@@ -12,6 +12,7 @@ import android.support.v4.app.TaskStackBuilder;
 import android.telephony.SmsManager;
 import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -19,39 +20,43 @@ import java.util.Calendar;
  */
 public class AlarmReceiver extends BroadcastReceiver {
     Context context;
+    private static final String SMS_SEND_ACTION = "CTS_SMS_SEND_ACTION";
+    private static final String SMS_DELIVERY_ACTION = "CTS_SMS_DELIVERY_ACTION";
+
     @Override
     public void onReceive(Context context, Intent intent) {
         this.context = context;
-        Toast.makeText(context, "Test run", Toast.LENGTH_LONG).show();
-        String message = "If you are receiving this, please call +918087088708 and inform";
 
         Calendar calendar = Calendar.getInstance();
         int day = calendar.get(Calendar.DAY_OF_WEEK);
+        int weekday = 0;
         switch (day) {
-            case Calendar.SUNDAY:
-                message = MainActivity.menu[0];
-                break;
             case Calendar.MONDAY:
-                message = MainActivity.menu[1];
+                weekday = 0;
                 break;
             case Calendar.TUESDAY:
-                message = MainActivity.menu[2];
+                weekday = 1;
                 break;
             case Calendar.WEDNESDAY:
-                message = MainActivity.menu[3];
+                weekday = 2;
                 break;
             case Calendar.THURSDAY:
-                message = MainActivity.menu[4];
+                weekday = 3;
                 break;
             case Calendar.FRIDAY:
-                message = MainActivity.menu[5];
+                weekday = 4;
                 break;
             case Calendar.SATURDAY:
-                message = MainActivity.menu[6];
+                weekday = 5;
+                break;
+            case Calendar.SUNDAY:
+                weekday = 6;
                 break;
         }
+        GsonModels.Result weekdayResult = Data.getMenuResponse().getResults().get(weekday);
+        String message = "Breakfast: " + weekdayResult.getBreakfast() + "\n" + "Lunch: " + weekdayResult.getLunch() + "\n" + "Tiffin: " + weekdayResult.getTiffin() + "\n" + "Dinner: " + weekdayResult.getDinner();
 
-        for (String number: MainActivity.numbers) {
+        for (String number : MainActivity.numbers) {
             sendSMS(number, message);
         }
 
@@ -59,7 +64,9 @@ public class AlarmReceiver extends BroadcastReceiver {
                 new NotificationCompat.Builder(context)
                         .setSmallIcon(R.mipmap.ic_launcher)
                         .setContentTitle("SMS Sent")
-                        .setContentText(message);
+                        .setContentText(message)
+                        .setStyle(new NotificationCompat.BigTextStyle()
+                                .bigText(message));
 // Creates an explicit intent for an Activity in your app
         Intent resultIntent = new Intent(context, MainActivity.class);
 
@@ -84,8 +91,7 @@ public class AlarmReceiver extends BroadcastReceiver {
         mNotificationManager.notify(MainActivity.mId, mBuilder.build());
     }
 
-    private void sendSMS(String phoneNumber, String message)
-    {
+    private void sendSMS(String phoneNumber, String message) {
         String SENT = "SMS_SENT";
         String DELIVERED = "SMS_DELIVERED";
 
@@ -96,11 +102,10 @@ public class AlarmReceiver extends BroadcastReceiver {
                 new Intent(DELIVERED), 0);
 
         //---when the SMS has been sent---
-        context.getApplicationContext().registerReceiver(new BroadcastReceiver(){
+        context.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         Toast.makeText(context, "SMS sent",
                                 Toast.LENGTH_SHORT).show();
@@ -126,11 +131,10 @@ public class AlarmReceiver extends BroadcastReceiver {
         }, new IntentFilter(SENT));
 
         //---when the SMS has been delivered---
-        context.getApplicationContext().registerReceiver(new BroadcastReceiver(){
+        context.getApplicationContext().registerReceiver(new BroadcastReceiver() {
             @Override
             public void onReceive(Context arg0, Intent arg1) {
-                switch (getResultCode())
-                {
+                switch (getResultCode()) {
                     case Activity.RESULT_OK:
                         Toast.makeText(context, "SMS delivered",
                                 Toast.LENGTH_SHORT).show();
@@ -144,6 +148,15 @@ public class AlarmReceiver extends BroadcastReceiver {
         }, new IntentFilter(DELIVERED));
 
         SmsManager sms = SmsManager.getDefault();
-        sms.sendTextMessage(phoneNumber, null, message, sentPI, deliveredPI);
+        ArrayList<String> parts = sms.divideMessage(message);
+        ArrayList<PendingIntent> sentIntents = new ArrayList<>();
+        ArrayList<PendingIntent> deliveryIntents = new ArrayList<>();
+
+        for (int i = 0; i < parts.size(); i++) {
+            sentIntents.add(PendingIntent.getBroadcast(context, 0, new Intent(SMS_SEND_ACTION), 0));
+            deliveryIntents.add(PendingIntent.getBroadcast(context, 0, new Intent(SMS_DELIVERY_ACTION), 0));
+        }
+
+        sms.sendMultipartTextMessage(phoneNumber, null, parts, sentIntents, deliveryIntents);
     }
 }
