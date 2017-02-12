@@ -24,12 +24,12 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_SEND_SMS = 1;
-    Button enableButton;
-    public static Button reloadMenuButton;
-    AlarmManager alarmManager;
-    PendingIntent alarmIntent;
     public static List<String> numbers;
     public static int mId = 0;
+    public Button reloadMenuButton;
+    Button enableButton;
+    AlarmManager alarmManager;
+    PendingIntent alarmIntent;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,8 +39,8 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent intent = new Intent(this, AlarmReceiver.class);
-        alarmIntent = alarmIntent.getBroadcast(this, 0, intent, 0);
+        Intent intent = new Intent(this, AlarmService.class);
+        alarmIntent = PendingIntent.getService(this, 0, intent, 0);
 
         numbers = new ArrayList<>();
         numbers.add("+917043207800");
@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);
 
-                alarmManager = (AlarmManager) MainActivity.this.getSystemService(MainActivity.this.ALARM_SERVICE);
+                alarmManager = (AlarmManager) MainActivity.this.getSystemService(MainActivity.ALARM_SERVICE);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
                 Toast.makeText(MainActivity.this, "Enabled", Toast.LENGTH_SHORT).show();
             }
@@ -72,8 +72,9 @@ public class MainActivity extends AppCompatActivity {
                         if (response.isSuccessful()) {
                             Data.setMenuResponse(response.body());
                             Log.d("TAG", "onResponse: success");
+                        } else {
+                            Log.d("TAG", "onResponse: failure " + response.code() + " " + response.body());
                         }
-                        Log.d("TAG", "onResponse: failure " + response.code() + " " + response.body());
                     }
 
                     @Override
