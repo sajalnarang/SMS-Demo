@@ -1,6 +1,7 @@
 package com.example.sajalnarang.smsdemo;
 
 import okhttp3.OkHttpClient;
+import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -16,7 +17,9 @@ public class ServiceGenerator {
             .addConverterFactory(GsonConverterFactory.create());
     private static Retrofit retrofit;
     public static <S> S createService(Class<S> serviceClass) {
-        retrofit = retrofitBuilder.client(clientBuilder.build()).build();
+        HttpLoggingInterceptor httpLoggingInterceptor = new HttpLoggingInterceptor();
+        httpLoggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY);
+        retrofit = retrofitBuilder.client(clientBuilder.addInterceptor(httpLoggingInterceptor).build()).build();
         return retrofit.create(serviceClass);
     }
 }

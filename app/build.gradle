@@ -20,7 +20,7 @@ android {
 }
 
 ext {
-    supportLibVersion = '25.1.0'
+    supportLibVersion = '25.1.1'
     retrofitVersion = '2.1.0'
     okhttpVersion = '3.4.1'
 }
@@ -33,4 +33,5 @@ dependencies {
     compile "com.squareup.retrofit2:retrofit:${retrofitVersion}"
     compile "com.squareup.retrofit2:converter-gson:${retrofitVersion}"
     compile "com.squareup.okhttp3:okhttp:${okhttpVersion}"
+    compile "com.squareup.okhttp3:logging-interceptor:${okhttpVersion}"
 }
