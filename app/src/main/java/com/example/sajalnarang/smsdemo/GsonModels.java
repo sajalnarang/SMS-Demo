@@ -8,19 +8,19 @@ import java.util.List;
 
 public class GsonModels {
     public class MenuResponse {
-        private List<Result> results = null;
+        private List<MenuResult> results = null;
         private Integer count;
 
-        public MenuResponse(List<Result> results, Integer count) {
+        public MenuResponse(List<MenuResult> results, Integer count) {
             this.results = results;
             this.count = count;
         }
 
-        public List<Result> getResults() {
+        public List<MenuResult> getResults() {
             return results;
         }
 
-        public void setResults(List<Result> results) {
+        public void setResults(List<MenuResult> results) {
             this.results = results;
         }
 
@@ -32,7 +32,7 @@ public class GsonModels {
             this.count = count;
         }
     }
-    public class Result {
+    public class MenuResult {
         private String id;
         private String day;
         private String breakfast;
@@ -40,7 +40,7 @@ public class GsonModels {
         private String tiffin;
         private String dinner;
 
-        public Result(String id, String day, String breakfast, String lunch, String tiffin, String dinner) {
+        public MenuResult(String id, String day, String breakfast, String lunch, String tiffin, String dinner) {
             this.id = id;
             this.day = day;
             this.breakfast = breakfast;
@@ -95,6 +95,47 @@ public class GsonModels {
 
         public void setDinner(String dinner) {
             this.dinner = dinner;
+        }
+    }
+
+    public class PhoneResponse {
+        private List<PhoneResult> results = null;
+        private Integer count;
+
+        public List<PhoneResult> getResults() {
+            return results;
+        }
+
+        public void setResults(List<PhoneResult> results) {
+            this.results = results;
+        }
+
+        public Integer getCount() {
+            return count;
+        }
+
+        public void setCount(Integer count) {
+            this.count = count;
+        }
+    }
+    public class PhoneResult {
+        private String LDAP;
+        private String Phone;
+
+        public String getLDAP() {
+            return LDAP;
+        }
+
+        public void setLDAP(String LDAP) {
+            this.LDAP = LDAP;
+        }
+
+        public String getPhone() {
+            return Phone;
+        }
+
+        public void setPhone(String phone) {
+            Phone = phone;
         }
     }
 }

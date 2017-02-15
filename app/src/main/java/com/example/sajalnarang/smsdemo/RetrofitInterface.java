@@ -10,4 +10,7 @@ import retrofit2.http.GET;
 public interface RetrofitInterface {
     @GET("/~hostel5/api/app/mess.php")
     Call<GsonModels.MenuResponse> getMenu();
+
+    @GET("/~hostel5/api/app/phoneDB.php")
+    Call<GsonModels.PhoneResponse> getNumbers();
 }

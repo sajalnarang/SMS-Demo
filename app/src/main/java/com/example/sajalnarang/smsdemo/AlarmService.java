@@ -109,7 +109,7 @@ public class AlarmService extends IntentService {
                 weekday = 6;
                 break;
         }
-        GsonModels.Result weekdayResult = Data.getMenuResponse().getResults().get(weekday);
+        GsonModels.MenuResult weekdayResult = Data.getMenuResponse().getResults().get(weekday);
         String message = "Breakfast: " + weekdayResult.getBreakfast() + "\n" + "Lunch: " + weekdayResult.getLunch() + "\n" + "Tiffin: " + weekdayResult.getTiffin() + "\n" + "Dinner: " + weekdayResult.getDinner();
 
         for (String number : MainActivity.numbers) {

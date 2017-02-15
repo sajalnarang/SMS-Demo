@@ -6,9 +6,9 @@ package com.example.sajalnarang.smsdemo;
 
 public class Data {
     private static GsonModels.MenuResponse menuResponse;
+    private static GsonModels.PhoneResponse phoneResponse;
 
-    public Data(GsonModels.MenuResponse menuResponse) {
-        this.menuResponse = menuResponse;
+    public Data() {
     }
 
     public static GsonModels.MenuResponse getMenuResponse() {
@@ -17,5 +17,13 @@ public class Data {
 
     public static void setMenuResponse(GsonModels.MenuResponse menuResponse) {
         Data.menuResponse = menuResponse;
+    }
+
+    public static GsonModels.PhoneResponse getPhoneResponse() {
+        return phoneResponse;
+    }
+
+    public static void setPhoneResponse(GsonModels.PhoneResponse phoneResponse) {
+        Data.phoneResponse = phoneResponse;
     }
 }

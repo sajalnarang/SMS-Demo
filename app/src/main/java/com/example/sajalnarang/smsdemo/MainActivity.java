@@ -27,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     public static List<String> numbers;
     public static int mId = 0;
     public Button reloadMenuButton;
+    public Button reloadNumbersButton;
     Button enableButton;
     AlarmManager alarmManager;
     PendingIntent alarmIntent;
@@ -71,15 +72,38 @@ public class MainActivity extends AppCompatActivity {
                     public void onResponse(Call<GsonModels.MenuResponse> call, Response<GsonModels.MenuResponse> response) {
                         if (response.isSuccessful()) {
                             Data.setMenuResponse(response.body());
-                            Log.d("TAG", "onResponse: success");
+                            Log.d("Menu", "onResponse: success");
                         } else {
-                            Log.d("TAG", "onResponse: failure " + response.code() + " " + response.body());
+                            Log.d("Menu", "onResponse: failure " + response.code() + " " + response.body());
                         }
                     }
 
                     @Override
                     public void onFailure(Call<GsonModels.MenuResponse> call, Throwable t) {
-                        Log.d("TAG", "onFailure: ");
+                        Log.d("Menu", "onFailure");
+                    }
+                });
+            }
+        });
+        reloadNumbersButton = (Button) findViewById(R.id.reload_numbers_btn);
+        reloadNumbersButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RetrofitInterface retrofitInterface = ServiceGenerator.createService(RetrofitInterface.class);
+                retrofitInterface.getNumbers().enqueue(new Callback<GsonModels.PhoneResponse>() {
+                    @Override
+                    public void onResponse(Call<GsonModels.PhoneResponse> call, Response<GsonModels.PhoneResponse> response) {
+                        if (response.isSuccessful()) {
+                            Data.setPhoneResponse(response.body());
+                            Log.d("Phone", "onResponse: success");
+                        } else {
+                            Log.d("Phone", "onResponse: failure " + response.code() + " " + response.body());
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<GsonModels.PhoneResponse> call, Throwable t) {
+                        Log.d("Phone", "onFailure");
                     }
                 });
             }
