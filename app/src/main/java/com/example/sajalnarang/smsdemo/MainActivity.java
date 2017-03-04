@@ -13,9 +13,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -24,7 +22,6 @@ import retrofit2.Response;
 public class MainActivity extends AppCompatActivity {
 
     private static final int MY_PERMISSIONS_SEND_SMS = 1;
-    public static List<String> numbers;
     public static int mId = 0;
     public Button reloadMenuButton;
     public Button reloadNumbersButton;
@@ -43,10 +40,6 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = new Intent(this, AlarmService.class);
         alarmIntent = PendingIntent.getService(this, 0, intent, 0);
 
-        numbers = new ArrayList<>();
-        numbers.add("+917043207800");
-        numbers.add("+918828291032");
-        numbers.add("+919819960546");
         enableButton = (Button) findViewById(R.id.enable_btn);
         enableButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -57,6 +50,8 @@ public class MainActivity extends AppCompatActivity {
                 calendar.set(Calendar.MINUTE, 0);
                 calendar.set(Calendar.SECOND, 0);
 
+                if (calendar.getTimeInMillis() < System.currentTimeMillis())
+                    calendar.setTimeInMillis(calendar.getTimeInMillis() + AlarmManager.INTERVAL_DAY);
                 alarmManager = (AlarmManager) MainActivity.this.getSystemService(MainActivity.ALARM_SERVICE);
                 alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, calendar.getTimeInMillis(), AlarmManager.INTERVAL_DAY, alarmIntent);
                 Toast.makeText(MainActivity.this, "Enabled", Toast.LENGTH_SHORT).show();
@@ -110,4 +105,3 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 }
-    
